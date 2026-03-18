@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>14 | Mitarbeiter FAQ</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F6F9F5;
+  --surface: #ffffff;
+  --surface-2: #eef2ed;
+  --surface-3: #BBC0B9;
+  --border: #d0d4ce;
+  --text: #091405;
+  --text-muted: #5a6355;
+  --accent: #035772;
+  --accent-light: #A5C8D4;
+  --accent-dim: rgba(3, 87, 114, 0.08);
+  --user-bubble: #035772;
+  --user-text: #ffffff;
+  --bot-bubble: #ffffff;
+  --danger: #c0392b;
+  --radius: 12px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+html, body {
+  height: 100%; width: 100%;
+  font-family: var(--font-body);
+  font-weight: 300;
+  background: var(--bg); color: var(--text);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== LAYOUT ===== */
+.app {
+  display: flex; flex-direction: column;
+  height: 100%; max-width: 600px; margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: relative;
+  flex-shrink: 0;
+}
+.header .logo {
+  font-family: var(--font-heading);
+  font-size: 28px; font-weight: 700; letter-spacing: 2px;
+  color: var(--accent);
+}
+.header .logo-img {
+  height: 40px; width: auto; max-width: 160px;
+  margin-right: 10px; object-fit: contain;
+  display: block;
+}
+.header .subtitle {
+  font-family: var(--font-body); font-weight: 200;
+  font-size: 11px; color: var(--text-muted);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-left: 12px; margin-top: 4px;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--surface); flex-shrink: 0;
+}
+.tab {
+  flex: 1; padding: 10px 0; text-align: center;
+  font-size: 13px; font-weight: 500; color: var(--text-muted);
+  background: none; border: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  position: relative;
+}
+.tab {
+  font-family: var(--font-heading);
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--text); }
+.badge {
+  position: absolute; top: 4px; right: calc(50% - 30px);
+  background: var(--danger); color: #fff;
+  font-size: 10px; font-weight: 700;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 5px;
+}
+.badge:empty, .badge[data-count="0"] { display: none; }
+
+/* ===== VIEWS ===== */
+.view { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.view.active { display: flex; }
+
+/* ===== CHAT VIEW ===== */
+.messages {
+  flex: 1; overflow-y: auto; padding: 16px 16px 8px;
+  display: flex; flex-direction: column; gap: 10px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.msg {
+  max-width: 85%; padding: 10px 14px;
+  border-radius: var(--radius); font-size: 14px; line-height: 1.5;
+  word-wrap: break-word; animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.msg.user {
+  align-self: flex-end; background: var(--user-bubble);
+  border-bottom-right-radius: 4px; color: var(--user-text);
+}
+.msg.bot {
+  align-self: flex-start; background: var(--bot-bubble);
+  border: 1px solid var(--border); border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.msg.bot .forwarded-note {
+  display: block; margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--accent); font-style: italic;
+}
+
+.welcome {
+  text-align: center; padding: 40px 20px; color: var(--text-muted);
+}
+.welcome .big-logo {
+  font-family: var(--font-heading);
+  font-size: 56px; font-weight: 700; color: var(--accent); margin-bottom: 8px;
+}
+.welcome p { font-size: 14px; line-height: 1.6; }
+
+.typing {
+  align-self: flex-start; background: var(--bot-bubble);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 12px 18px; display: none; gap: 4px; align-items: center;
+}
+.typing.visible { display: flex; }
+.typing span {
+  width: 7px; height: 7px; background: var(--text-muted);
+  border-radius: 50%; animation: bounce 1.4s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* Quick Questions */
+.quick-questions {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 8px 16px; flex-shrink: 0;
+}
+.quick-btn {
+  font-family: var(--font-body); font-weight: 300;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-muted); padding: 6px 12px; border-radius: 20px;
+  font-size: 12px; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.quick-btn:hover { background: var(--accent-dim); color: var(--accent); border-color: var(---accent-light); }
+
+/* Input */
+.input-area {
+  display: flex; gap: 8px; padding: 12px 16px;
+  padding-bottom: calc(12px + var(--safe-bottom));
+  border-top: 1px solid var(--border); background: var(--surface);
+  flex-shrink: 0;
+}
+.input-area input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 10px 16px; color: var(--text);
+  font-family: var(--font-body); font-weight: 300;
+  font-size: 15px; outline: none; transition: border-color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.input-area input::placeholder { color: var(--text-muted); }
+.input-area input:focus { border-color: var(--accent); }
+.input-area button {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--accent); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.2s;
+flex-shrink: 0;
+}
+.input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
+.input-area button svg { width: 18px; height: 18px; fill: #ffffff; }
+
+/* ===== TOPICS VIEW ===== */
+.topics {
+  flex: 1; overflow-y: auto; padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.topic-category {
+  margin-bottom: 20px;
+}
+.topic-category h3 {
+  font-family: var(--font-heading);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--accent); margin-bottom: 8px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.topic-item {
+  padding: 10px 12px; margin-bottom: 4px;
+  background: var(--surface); border-radius: 8px;
+  font-size: 14px; color: var(--text-muted); cursor: pointer;
+  transition: all 0.2s; border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.topic-item:hover {
+  background: var(--accent-dim); color: var(--accent);
+  border-color: var(--accent-light);
+}
+
+/* ===== ADMIN VIEW ===== */
+.admin {
+  flex: 1; overflow-y: auto; padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.admin-empty {
+  text-align: center; padding: 40px 20px; color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* PIN Login */
+.admin-login {
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: center; padding: 60px 20px; gap: 16px;
+}
+.admin-login .lock-icon { font-size: 40px; margin-bottom: 4px; }
+.admin-login p {
+  font-size: 14px; color: var(--text-muted): text-align: center;
+}
+.admin-login .pin-row {
+  display: flex; gap: 8px; align-items: center;
+}
+.admin-login input {
+  width: 140px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-family: var(--font-heading); font-size: 18px;
+  text-align: center; letter-spacing: 6px; outline: none;
+}
+.admin-login input:focus { border-color: var(--accent); }
+.admin-login .pin-submit {
+  background: var(--accent); color: #fff; border: none;
+  padding: 10px 18px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-heading); font-size: 14px;
+  transition: opacity 0.2s;
+}
+.admin-login .pin-submit:hover { opacity: 0.85; }
+.admin-login .pin-error {
+  color: var(--danger); font-size: 12px; min-height: 16px;
+}
+
+/* Admin Sub-Tabs */
+.admin-subtabs {
+  display: flex; gap: 0; margin-bottom: 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden;
+}
+.admin-subtab {
+  flex: 1; padding: 8px 0; text-align: center;
+  font-family: var(--font-heading); font-size: 12px; font-weight: 500;
+  color: var(--text-muted); background: var(--surface);
+  border: none; cursor: pointer; transition: all 0.2s;
+  border-right: 1px solid var(--border);
+}
+.admin-subtab:last-child { border-right: none; }
+.admin-subtab.active {
+  background: var(--accent); color: #fff;
+}
+
+/* Admin Logout */
+.admin-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.admin-header .admin-title {
+  font-family: var(--font-heading); font-size: 14px; font-weight: 600;
+  color: var(--text);
+}
+.admin-logout {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; cursor: pointer; transition: all 0.2s;
+  font-family: var(--font-heading);
+}
+.admin-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Admin Items */
+.admin-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+  animation: fadeIn 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.admin-item .question { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+.admin-item .meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.admin-item .time { font-size: 11px; color: var(--text-muted); }
+.admin-item .actions { display: flex; gap: 6px; }
+.admin-item .action-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 4px 10px; border-radius: 6px;
+  font-size: 11px; cursor: pointer; transition: all 0.2s;
+}
+.admin-item .action-btn:hover {
+  border-color: var(--accent); color: var(--accent);
+}
+.admin-item .action-btn.delete:hover {
+  border-color: var(--danger); color: var(--danger);
+}
+
+/* Answer Form */
+.answer-form {
+  margin-top: 8px; display: none;
+}
+.anr-form.visible { display: block; }
+.answer-form textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; color: var(--text);
+  font-family: var(--font-body); font-weight: 300; font-size: 13px;
+  resize: vertical; min-height: 60px; outline: none;
+}
+.answer-form textarea:focus { border-color: var(--accent); }
+.answer-form .form-actions {
+  display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end;
+}
+.answer-form .save-btn {
+  background: var(--accent); color: #fff; border: none;
+  padding: 5px 14px; border-radius: 6px; font-size: 12px;
+  cursor: pointer; font-family: var(--font-heading);
+}
+.answer-form .cancel-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); padding: 5px 14px; border-radius: 6px;
+  font-size: 12px; cursor: pointer;
+}
+
+.admin-clear-all {
+  display: block; width: 100%; padding: 10px;
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted); border-radius: 8px;
+  font-size: 13px; cursor: pointer; margin-top: 8px;
+  transition: all 0.2s;
+}
+.admin-clear-all:hover { border-color: var(--danger); color: var(--danger); }
+
+/* Stats */
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.stat-card .stat-value {
+  font-family: var(--font-heading); font-size: 28px; font-weight: 700;
+  color: var(--accent); line-height: 1;
+}
+.stat-card .stat-label {
+  font-size: 11px; color: var(--text-muted); margin-top: 4px;
+}
+.stat-section {
+  margin-bottom: 16px;
+}
+.stat-section h4 {
+  font-family: var(--font-heading); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--accent); margin-bottom: 8px;
+  padding-bottom: 4px; border-bottom: 1px solid var(--border);
+}
+.stat-bar-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px; font-size: 13px;
+}
+.stat-bar-label {
+  flex: 0 0 120px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.stat-bar {
+  flex: 1; height: 8px; background: var(--surface-2);
+  border-radius: 4px; overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%; background: var(--accent); border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.stat-bar-count {
+  flex: 0 0 28px; text-align: right; font-size: 12px;
+  color: var(--text-muted); font-family: var(--font-heading);
+}
+
+/* ===== NEUER CHAT BUTTON ===== */
+.new-chat-btn {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 5px 10px; border-radius: 6px; font-size: 11px;
+  font-family: var(--font-heading); cursor: pointer; transition: all 0.2s;
+}
+.new-chat-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ===== FEEDBACK BUTTONS ===== */
+.feedback {
+  display: flex; gap: 4px; margin-top: 6px; padding-top: 4px;
+}
+.feedback-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 16px; padding: 2px 6px;
+  border-radius: 4px; transition: all 0.2s; opacity: 0.5;
+  line-height: 1;
+}
+.feedback-btn:hover { opacity: 1; background: var(--accent-dim); }
+.feedback-btn.selected { opacity: 1; color: var(--accent); }
+.feedback-btn.selected.down { color: var(--danger); }
+
+/* ===== TOPIC SEARCH ===== */
+.topic-search {
+  padding: 12px 16px 4px; flex-shrink: 0;
+}
+.topic-search input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 9px 16px; color: var(--text);
+  font-family: var(--font-body); font-weight: 300;
+  font-size: 14px; outline: none; transition: border-color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.topic-search input::placeholder { color: var(--text-muted); }
+.topic-search input:focus { border-color: var(--accent); }
+.topic-item.hidden { display: none; }
+.topic-category.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <img src="logo.svg" alt="Vierzehn" class="logo-img">
+    <span class="subtitle">Team FAQ</span>
+    <button class="new-chat-btn" id="newChatBtn" title="Neues Gespräch starten">Neuer Chat</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-view="chat">Chat</button>
+    <button class="tab" data-view="topics">Themen</button>
+    <button class="tab" data-view="admin">Offen <span class="badge" id="adminBadge"></span></button>
+  </div>
+
+  <!-- Chat View -->
+  <div class="view active" id="chatView">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <img src="logo.svg" alt="Vierzehn" style="height: 72px; width: auto; max-width: 280px; object-fit: contain; margin-bottom: 12px;">
+        <p>Willkommen! Stell mir eine Frage zu<br>Arbeitsabläufen, HR oder dem Betrieb.</p>
+      </div>
+    </div>
+    <div class="quick-questions" id="quickQuestions">
+      <button class="quick-btn" data-q="Wie melde ich mich krank?">Krankmeldung</button>
+      <button class="quick-btn" data-q="Wie beantrage ich Urlaub?">Urlaub</button>
+      <button class="quick-btn" data-q="Wie funktioniert die Zeiterfassung mit Ordio?">Zeiterfassung</button>
+      <button class="quick-btn" data-q="Wer sind meine Ansprechpartner?">Ansprechpartner</button>
+      <button class="quick-btn" data-q="Was bekomme ich kostenlos und was gibt es mit Rabatt?">Mitarbeiteressen</button>
+      <button class="quick-btn" data-q="Was muss ich bei der Arbeitskleidung beachten?">Kleiderordnung</button>
+    </div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Frag mich etwas..." autocomplete="off">
+      <button id="sendBtn" disabled>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Topics View -->
+  <div class="view" id="topicsView">
+    <div class="topic-search">
+      <input type="text" id="topicSearchInput" placeholder="Thema suchen..." autocomplete="off">
+    </div>
+    <div class="topics" id="topicsList"></div>
+  </div>
+
+  <!-- Admin View -->
+  <div class="view" id="adminView">
+    <div class="admin" id="adminContent">
+      <!-- PIN Login (Standard-Ansicht) -->
+      <div class="admin-login" id="adminLogin">
+        <div class="lock-icon">&#x1F512;</div>
+        <p>Admin-Bereich<br>Bitte PIN eingeben</p>
+        <div class="pin-row">
+          <input type="password" id="pinInput" maxlength="4" placeholder="----" inputmode="numeric" pattern="[0-9]*">
+          <button class="pin-submit" id="pinSubmit">OK</button>
+        </div>
+        <div class="pin-error" id="pinError"></div>
+      </div>
+      <!-- Admin Dashboard (nach Login) -->
+      <div id="adminDashboard" style="display:none;">
+        <div class="admin-header">
+          <span class="admin-title">Admin</span>
+          <button class="admin-logout" id="adminLogout">Abmelden</button>
+        </div>
+        <div class="admin-subtabs">
+          <button class="admin-subtab active" data-subtab="questions">Offene Fragen</button>
+          <button class="admin-subtab" data-subtab="answered">Beantwortet</button>
+          <button class="admin-subtab" data-subtab="stats">Statistiken</button>
+        </div>
+        <div id="adminSubContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+// KONFIGURATION – Worker-URL hier eintragen
+// =====================================================
+const WORKER_URL = "https://DEIN-WORKER.DEIN-SUBDOMAIN.workers.dev";
+
+// =====================================================
+// STATE
+// =====================================================
+let conversationHistory = [];
+let isLoading = false;
+
+// DOM
+const messagesEl = document.getElementById("messages");
+const inputEl = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const typingEl = createTypingIndicator();
+const adminBadge = document.getElementById("adminBadge");
+const newChatBtn = document.getElementById("newChatBtn");
+
+// =====================================================
+// CHAT-VERLAUF SPEICHERN / LADEN
+// =====================================================
+function saveChatHistory() {
+  try {
+    localStorage.setItem("vierzehn_chat", JSON.stringify(conversationHistory));
+  } catch (e) { console.warn("Chat konnte nicht gespeichert werden:", e); }
+}
+
+function loadChatHistory() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("vierzehn_chat") || "[]");
+    if (saved.length > 0) {
+      conversationHistory = saved;
+      // Welcome-Screen entfernen
+      const welcome = messagesEl.querySelector(".welcome");
+      if (welcome) welcome.remove();
+      // Quick Questions ausblenden
+      document.getElementById("quickQuestions").style.display = "none";
+      // Nachrichten wiederherstellen
+      conversationHistory.forEach(msg => {
+        if (msg.role === "user") {
+          addMessageDOM(msg.content, "user");
+        } else if (msg.role === "assistant") {
+          addMessageDOM(msg.content, "bot");
+        }
+      });
+      scrollToBottom();
+    }
+  } catch (e) { console.warn("Chat konnte nicht geladen werden:", e); }
+}
+
+function clearChat() {
+  // Aktuelle User-Fragen in Statistik speichern
+  try {
+    const stats = JSON.parse(localStorage.getItem("vierzehn_chat_stats") || "[]");
+    const userMsgs = conversationHistory.filter(m => m.role === "user").map(m => m.content);
+    localStorage.setItem("vierzehn_chat_stats", JSON.stringify([...stats, ...userMsgs]));
+  } catch (e) {}
+  conversationHistory = [];
+  localStorage.removeItem("vierzehn_chat");
+  messagesEl.innerHTML = `
+    <div class="welcome">
+      <img src="logo.svg" alt="Vierzehn" style="height: 72px; width: auto; max-width: 280px; object-fit: contain; margin-bottom: 12px;">
+      <p>Willkommen! Stell mir eine Frage zu<br>Arbeitsabläufen, HR oder dem Betrieb.</p>
+    </div>`;
+  document.getElementById("quickQuestions").style.display = "flex";
+}
+
+newChatBtn.addEventListener("click", clearChat);
+
+// =====================================================
+// TABS
+// =====================================================
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.view + "View").classList.add("active");
+  });
+});
+
+// =====================================================
+// CHAT
+// =====================================================
+inputEl.addEventListener("input", () => {
+  sendBtn.disabled = !inputEl.value.trim() || isLoading;
+});
+
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !sendBtn.disabled) sendMessage();
+});
+
+sendBtn.addEventListener("click", sendMessage);
+
+// Quick Questions
+document.querySelectorAll(".quick-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    inputEl.value = btn.dataset.q;
+    sendBtn.disabled = false;
+    sendMessage();
+  });
+});
+
+function createTypingIndicator() {
+  const div = document.createElement("div");
+  div.className = "typing";
+  div.innerHTML = "<span></span><span></span><span></span>";
+  return div;
+}
+
+// Rendert eine Nachricht ins DOM (ohne History zu ändern)
+function addMessageDOM(text, role) {
+  const welcome = messagesEl.querySelector(".welcome");
+  if (welcome) welcome.remove();
+
+  const div = document.createElement("div");
+  div.className = `msg ${role}`;
+
+  if (role === "bot") {
+    const isForwarded = text.includes("[WEITERLEITUNG]");
+    let displayText = text.replace("[WEITERLEITUNG]", "").trim();
+    div.innerHTML = formatText(displayText);
+
+    if (isForwarded) {
+      const note = document.createElement("span");
+      note.className = "forwarded-note";
+      note.textContent = "↗ Wurde an Patric weitergeleitet";
+      div.appendChild(note);
+    }
+
+    // Feedback-Buttons
+    const fb = document.createElement("div");
+    fb.className = "feedback";
+    fb.innerHTML = `
+      <button class="feedback-btn up" title="Gute Antwort">&#x1F44D;</button>
+      <button class="feedback-btn down" title="Schlechte Antwort">&#x1F44E;</button>`;
+    div.appendChild(fb);
+
+    fb.querySelectorAll(".feedback-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        fb.querySelectorAll(".feedback-btn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        saveFeedback(displayText, btn.classList.contains("up") ? "up" : "down");
+      });
+    });
+  } else {
+    div.textContent = text;
+  }
+
+  messagesEl.appendChild(div);
+}
+
+function addMessage(text, role) {
+  addMessageDOM(text, role);
+
+  if (role === "bot") {
+    const isForwarded = text.includes("[WEITERLEITUNG]");
+    if (isForwarded) {
+      saveForwardedQuestion(getLastUserMessage());
+    }
+  }
+
+  scrollToBottom();
+}
+
+function formatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+}
+
+function getLastUserMessage() {
+  for (let i = conversationHistory.length - 1; i >= 0; i--) {
+    if (conversationHistory[i].role === "user") return conversationHistory[i].content;
+  }
+  return "";
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
+}
+
+function showTyping() {
+  typingEl.classList.add("visible");
+  messagesEl.appendChild(typingEl);
+  scrollToBottom();
+}
+
+function hideTyping() {
+  typingEl.classList.remove("visible");
+  if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || isLoading) return;
+
+  inputEl.value = "";
+  sendBtn.disabled = true;
+  isLoading = true;
+
+  const qqs = document.getElementById("quickQuestions");
+  if (qqs) qqs.style.display = "none";
+
+  addMessage(text, "user");
+  conversationHistory.push({ role: "user", content: text });
+  saveChatHistory();
+
+  showTyping();
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: conversationHistory })
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "Entschuldigung, da ist etwas schiefgelaufen.";
+
+    hideTyping();
+    addMessage(reply, "bot");
+    conversationHistory.push({ role: "assistant", content: reply });
+    saveChatHistory();
+
+  } catch (err) {
+    hideTyping();
+    addMessage("Verbindungsfehler – bitte versuche es gleich nochmal.", "bot");
+    console.error("Fehler:", err);
+  }
+
+  isLoading = false;
+  sendBtn.disabled = !inputEl.value.trim();
+}
+
+// =====================================================
+// FEEDBACK (localStorage)
+// =====================================================
+function saveFeedback(answer, type) {
+  try {
+    const fb = JSON.parse(localStorage.getItem("vierzehn_feedback") || "[]");
+    fb.push({
+      answer: answer.substring(0, 100),
+      type: type,
+      time: new Date().toISOString()
+    });
+    localStorage.setItem("vierzehn_feedback", JSON.stringify(fb));
+  } catch (e) { console.warn("Feedback konnte nicht gespeichert werden:", e); }
+}
+
+// =====================================================
+// WEITERGELEITETE FRAGEN (localStorage)
+// =====================================================
+function getForwardedQuestions() {
+  try {
+    return JSON.parse(localStorage.getItem("vierzehn_forwarded") || "[]");
+  } catch { return []; }
+}
+
+function getAnsweredQuestions() {
+  try {
+    return JSON.parse(localStorage.getItem("vierzehn_answered") || "[]");
+  } catch { return []; }
+}
+
+function saveForwardedQuestion(question) {
+  if (!question) return;
+  const items = getForwardedQuestions();
+  items.unshift({
+    id: Date.now(),
+    question: question,
+    time: new Date().toLocaleString("de-DE")
+  });
+  localStorage.setItem("vierzehn_forwarded", JSON.stringify(items));
+  updateBadge();
+}
+
+function deleteForwarded(id) {
+  const items = getForwardedQuestions().filter(i => i.id !== id);
+  localStorage.setItem("vierzehn_forwarded", JSON.stringify(items));
+  renderAdminSubTab();
+  updateBadge();
+}
+
+function answerForwarded(id, answer) {
+  const items = getForwardedQuestions();
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  // In beantwortet verschieben
+  const answered = getAnsweredQuestions();
+  answered.unshift({
+    id: item.id,
+    question: item.question,
+    answer: answer,
+    askedAt: item.time,
+    answeredAt: new Date().toLocaleString("de-DE")
+  });
+  localStorage.setItem("vierzehn_answered", JSON.stringify(answered));
+  // Aus offen entfernen
+  deleteForwarded(id);
+}
+
+function deleteAnswered(id) {
+  const items = getAnsweredQuestions().filter(i => i.id !== id);
+  localStorage.setItem("vierzehn_answered", JSON.stringify(items));
+  renderAdminSubTab();
+}
+
+function clearAllForwarded() {
+  localStorage.setItem("vierzehn_forwarded", "[]");
+  renderAdminSubTab();
+  updateBadge();
+}
+
+function updateBadge() {
+  const count = getForwardedQuestions().length;
+  adminBadge.textContent = count || "";
+  adminBadge.dataset.count = count;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// =====================================================
+// ADMIN – PIN SCHUTZ
+// =====================================================
+const ADMIN_PIN = "1414";
+let adminUnlocked = false;
+
+const pinInput = document.getElementById("pinInput");
+const pinSubmit = document.getElementById("pinSubmit");
+const pinError = document.getElementById("pinError");
+const adminLogin = document.getElementById("adminLogin");
+const adminDashboard = document.getElementById("adminDashboard");
+
+pinSubmit.addEventListener("click", attemptLogin);
+pinInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") attemptLogin();
+});
+
+function attemptLogin() {
+  if (pinInput.value === ADMIN_PIN) {
+    adminUnlocked = true;
+    adminLogin.style.display = "none";
+    adminDashboard.style.display = "block";
+    pinError.textContent = "";
+    pinInput.value = "";
+    renderAdminSubTab();
+  } else {
+    pinError.textContent = "Falscher PIN";
+    pinInput.value = "";
+    pinInput.focus();
+  }
+}
+
+document.getElementById("adminLogout").addEventListener("click", () => {
+  adminUnlocked = false;
+  adminDashboard.style.display = "none";
+  adminLogin.style.display = "flex";
+});
+
+// =====================================================
+// ADMIN – SUB-TABS
+// =====================================================
+let activeSubTab = "questions";
+
+document.querySelectorAll(".admin-subtab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".admin-subtab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeSubTab = tab.dataset.subtab;
+    renderAdminSubTab();
+  });
+});
+
+function renderAdminSubTab() {
+  const container = document.getElementById("adminSubContent");
+  if (activeSubTab === "questions") renderOpenQuestions(container);
+  else if (activeSubTab === "answered") renderAnsweredQuestions(container);
+  else if (activeSubTab === "stats") renderStats(container);
+}
+
+// =====================================================
+// ADMIN – OFFENE FRAGEN
+// =====================================================
+function renderOpenQuestions(container) {
+  const items = getForwardedQuestions();
+
+  if (items.length === 0) {
+    container.innerHTML = '<div class="admin-empty">Keine offenen Fragen</div>';
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="admin-item" id="admin-item-${item.id}">
+      <div class="question">${escapeHtml(item.question)}</div>
+      <div class="meta">
+        <span class="time">${item.time}</span>
+        <div class="actions">
+          <button class="action-btn" onclick="toggleAnswerForm(${item.id})">Antworten</button>
+          <button class="action-btn delete" onclick="deleteForwarded(${item.id})">Löschen</button>
+        </div>
+      </div>
+      <div class="answer-form" id="answer-form-${item.id}">
+        <textarea placeholder="Antwort eingeben..." id="answer-text-${item.id}"></textarea>
+        <div class="form-actions">
+          <button class="cancel-btn" onclick="toggleAnswerForm(${item.id})">Abbrechen</button>
+          <button class="save-btn" onclick="submitAnswer(${item.id})">Speichern</button>
+        </div>
+      </div>
+    </div>
+  `).join("") + '<button class="admin-clear-all" onclick="clearAllForwarded()">Alle löschen</button>';
+}
+
+function toggleAnswerForm(id) {
+  const form = document.getElementById("answer-form-" + id);
+  if (form) form.classList.toggle("visible");
+}
+
+function submitAnswer(id) {
+  const textarea = document.getElementById("answer-text-" + id);
+  const answer = textarea ? textarea.value.trim() : "";
+  if (!answer) return;
+  answerForwarded(id, answer);
+}
+
+// =====================================================
+// ADMIN – BEANTWORTETE FRAGEN
+// =====================================================
+function renderAnsweredQuestions(container) {
+  const items = getAnsweredQuestions();
+
+  if (items.length === 0) {
+    container.innerHTML = '<div class="admin-empty">Noch keine beantworteten Fragen</div>';
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="admin-item">
+      <div class="question"><strong>F:</strong> ${escapeHtml(item.question)}</div>
+      <div style="font-size:13px; color: var(--accent); margin-top:6px; padding-top:6px; border-top:1px solid var(--border);">
+        <strong>A:</strong> ${escapeHtml(item.answer)}
+      </div>
+      <div class="meta" style="margin-top:8px; margin-bottom:0;">
+        <span class="time">Gefragt: ${item.askedAt} · Beantwortet: ${item.answeredAt}</span>
+        <button class="action-btn delete" onclick="deleteAnswered(${item.id})">Löschen</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+// =====================================================
+// ADMIN – STATISTIKEN
+// =====================================================
+function renderStats(container) {
+  const forwarded = getForwardedQuestions();
+  const answered = getAnsweredQuestions();
+  const feedback = getFeedbackData();
+  const chatHistory = getChatStats();
+
+  const totalQuestions = chatHistory.total;
+  const totalForwarded = forwarded.length + answered.length;
+  const thumbsUp = feedback.filter(f => f.type === "up").length;
+  const thumbsDown = feedback.filter(f => f.type === "down").length;
+  const totalFeedback = thumbsUp + thumbsDown;
+  const satisfaction = totalFeedback > 0 ? Math.round((thumbsUp / totalFeedback) * 100) : 0;
+
+  let html = `
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">${totalQuestions}</div>
+        <div class="stat-label">Fragen gesamt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${totalForwarded}</div>
+        <div class="stat-label">Weitergeleitet</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${satisfaction}%</div>
+        <div class="stat-label">Zufriedenheit</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${forwarded.length}</div>
+        <div class="stat-label">Offen</div>
+      </div>
+    </div>`;
+
+  // Feedback-Details
+  if (totalFeedback > 0) {
+    html += `
+    <div class="stat-section">
+      <h4>Feedback</h4>
+      <div class="stat-bar-row">
+        <span class="stat-bar-label">&#x1F44D; Positiv</span>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:${totalFeedback > 0 ? (thumbsUp/totalFeedback)*100 : 0}%"></div></div>
+        <span class="stat-bar-count">${thumbsUp}</span>
+      </div>
+      <div class="stat-bar-row">
+        <span class="stat-bar-label">&#x1F44E; Negativ</span>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:${totalFeedback > 0 ? (thumbsDown/totalFeedback)*100 : 0}%; background: var(--danger)"></div></div>
+        <span class="stat-bar-count">${thumbsDown}</span>
+      </div>
+    </div>`;
+  }
+
+  // Top-Fragen (aus Chat-History)
+  const topQuestions = chatHistory.topQuestions;
+  if (topQuestions.length > 0) {
+    html += `<div class="stat-section"><h4>Häufige Fragen</h4>`;
+    const maxCount = topQuestions[0].count;
+    topQuestions.forEach(q => {
+      html += `
+      <div class="stat-bar-row">
+        <span class="stat-bar-label" title="${escapeHtml(q.text)}">${escapeHtml(q.text.substring(0, 25))}${q.text.length > 25 ? '...' : ''}</span>
+        <div class="stat-bar"><div class="stat-bar-fill" style="width:${(q.count/maxCount)*100}%"></div></div>
+        <span class="stat-bar-count">${q.count}x</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function getFeedbackData() {
+  try {
+    return JSON.parse(localStorage.getItem("vierzehn_feedback") || "[]");
+  } catch { return []; }
+}
+
+function getChatStats() {
+  try {
+    const history = JSON.parse(localStorage.getItem("vierzehn_chat") || "[]");
+    const allChats = JSON.parse(localStorage.getItem("vierzehn_chat_stats") || "[]");
+
+    // Aktuelle User-Messages zählen
+    const userMsgs = history.filter(m => m.role === "user").map(m => m.content);
+    const combined = [...allChats, ...userMsgs];
+
+    // Häufigste Fragen finden
+    const freq = {};
+    combined.forEach(q => {
+      const key = q.toLowerCase().trim();
+      freq[key] = (freq[key] || 0) + 1;
+    });
+
+    const topQuestions = Object.entries(freq)
+      .map(([text, count]) => ({ text, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    return { total: combined.length, topQuestions };
+  } catch { return { total: 0, topQuestions: [] }; }
+}
+
+// Beim Tab-Wechsel rendern
+document.querySelector('[data-view="admin"]').addEventListener("click", () => {
+  if (adminUnlocked) renderAdminSubTab();
+});
+
+// =====================================================
+// TOPICS VIEW + SUCHE
+// =====================================================
+const TOPICS = {
+  "HR & Personal": [
+    { label: "Krankmeldung", q: "Wie melde ich mich krank?" },
+    { label: "Urlaubsantrag", q: "Wie beantrage ich Urlaub?" },
+    { label: "Gehalt & Abrechnung", q: "Wann bekomme ich mein Gehalt und wie ist der Abrechnungszeitraum?" },
+    { label: "Arbeitszeiten & Dienstplan", q: "Wie sind die Arbeitszeiten geregelt?" },
+    { label: "Probezeit & Kündigung", q: "Wie lang ist die Probezeit und welche Kündigungsfristen gelten?" },
+    { label: "Zeiterfassung (Ordio)", q: "Wie funktioniert die Zeiterfassung mit Ordio?" },
+    { label: "Lohnabrechnung (Taxmaro)", q: "Wie funktioniert Taxmaro und wo sehe ich meine Lohnabrechnung?" },
+    { label: "Mitarbeiterverpflegung", q: "Was bekomme ich kostenlos und was gibt es mit Rabatt?" },
+    { label: "Trinkgeld", q: "Ab wann bekomme ich Trinkgeld und wie wird es verteilt?" },
+    { label: "Arbeitsunfall", q: "Was mache ich bei einem Arbeitsunfall?" },
+    { label: "Arbeitsvertrag", q: "Welche Vertragsarten gibt es und was steht im Arbeitsvertrag?" },
+    { label: "Datenschutz (DSGVO)", q: "Welche Daten werden von mir gespeichert und welche Rechte habe ich?" }
+  ],
+  "Regeln & Verhalten": [
+    { label: "Arbeitskleidung", q: "Was muss ich bei der Arbeitskleidung beachten?" },
+    { label: "Handynutzung", q: "Darf ich mein Handy bei der Arbeit benutzen?" },
+    { label: "Pausen & Essen", q: "Wann und wo darf ich essen und Pause machen?" },
+    { label: "Raucherpausen", q: "Wo darf ich rauchen und was muss ich beachten?" },
+    { label: "Alkohol- & Drogenverbot", q: "Welche Regeln gelten beim Thema Alkohol und Drogen?" },
+    { label: "Verschwiegenheitspflicht", q: "Was bedeutet die Verschwiegenheitspflicht?" },
+    { label: "Nebentätigkeit", q: "Darf ich einen Nebenjob haben?" },
+    { label: "Social Media", q: "Darf ich das Restaurant auf Social Media taggen oder Fotos posten?" },
+    { label: "Mitarbeiterwerte", q: "Welche Werte und Haltung werden erwartet?" },
+    { label: "Fundsachen", q: "Was mache ich wenn ein Gast etwas vergessen hat?" }
+  ],
+  "Betriebsabläufe": [
+    { label: "Öffnungszeiten", q: "Wann hat das Vierzehn geöffnet und wann sind Ruhetage?" },
+    { label: "Schichtbeginn & -ende", q: "Was muss ich bei Schichtbeginn und Schichtende beachten?" },
+    { label: "Schichtplanung", q: "Wie funktioniert die Schichtplanung und wann muss ich meine Verfügbarkeit melden?" },
+    { label: "Kassensystem (LeafPOS)", q: "Wie funktioniert das Kassensystem LeafPOS?" },
+    { label: "Reservierungen (Resmio)", q: "Wie funktionieren Reservierungen und was ist Resmio?" },
+    { label: "Hygiene & HACCP", q: "Welche Hygiene-Regeln und HACCP-Vorschriften gelten?" },
+    { label: "Allergen-Anfragen", q: "Wie gehe ich mit Allergen-Anfragen von Gästen um?" },
+    { label: "Warenbestellung & Lager", q: "Wie funktioniert die Warenbestellung und was muss ich beim Lager beachten?" },
+    { label: "Reklamationen", q: "Was mache ich bei einer Gäste-Reklamation?" },
+    { label: "Müllentsorgung", q: "Wie funktioniert die Müllentsorgung?" },
+    { label: "Rezepte", q: "Wo finde ich die Rezepte und darf ich sie ändern?" }
+  ],
+  "Onboarding & Einarbeitung": [
+    { label: "Vor dem ersten Tag", q: "Was muss ich vor meinem ersten Arbeitstag erledigen?" },
+    { label: "Ansprechpartner", q: "Wer sind meine Ansprechpartner und wer ist wofür zuständig?" },
+    { label: "Einarbeitung Bar & Theke", q: "Wie läuft die Einarbeitung an der Bar ab?" },
+    { label: "Einarbeitung Koch", q: "Wie läuft die Einarbeitung in der Küche ab?" },
+    { label: "Einarbeitung Service", q: "Wie läuft die Einarbeitung im Service ab?" },
+    { label: "Einarbeitung Küchenhilfe", q: "Wie läuft die Einarbeitung als Küchenhilfe und Spüler ab?" },
+    { label: "Wichtige Dokumente", q: "Welche Dokumente muss ich vor dem ersten Tag lesen?" }
+  ],
+  "Praktisches & Sonstiges": [
+    { label: "WLAN", q: "Gibt es WLAN für Gäste und wie heißt das Netzwerk?" },
+    { label: "Parkplätze & Anfahrt", q: "Wo kann ich als Mitarbeiter parken oder mein Fahrrad abstellen?" },
+    { label: "Notfallkontakte", q: "Welche Notfallnummern und Kontakte sollte ich kennen?" },
+    { label: "Schlüssel & Gebäude", q: "Wer hat Schlüssel und wie wird das Restaurant geöffnet und geschlossen?" },
+    { label: "Events & Catering", q: "Bietet das Vierzehn Events und Catering an?" }
+  ]
+};
+
+function renderTopics() {
+  const list = document.getElementById("topicsList");
+  list.innerHTML = Object.entries(TOPICS).map(([category, items]) => `
+    <div class="topic-category">
+      <h3>${category}</h3>
+      ${items.map(item => `
+        <div class="topic-item" data-q="${escapeHtml(item.q)}" data-label="${escapeHtml(item.label.toLowerCase())}">${item.label}</div>
+      `).join("")}
+    </div>
+  `).join("");
+
+  list.querySelectorAll(".topic-item").forEach(item => {
+    item.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.querySelector('[data-view="chat"]').classList.add("active");
+      document.getElementById("chatView").classList.add("active");
+      inputEl.value = item.dataset.q;
+      sendBtn.disabled = false;
+      inputEl.focus();
+    });
+  });
+}
+
+// Themensuche
+document.getElementById("topicSearchInput").addEventListener("input", (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  const categories = document.querySelectorAll(".topic-category");
+
+  categories.forEach(cat => {
+    const items = cat.querySelectorAll(".topic-item");
+    let visibleCount = 0;
+
+    items.forEach(item => {
+      const label = item.dataset.label || item.textContent.toLowerCase();
+      const q = (item.dataset.q || "").toLowerCase();
+      const match = !query || label.includes(query) || q.includes(query);
+      item.classList.toggle("hidden", !match);
+      if (match) visibleCount++;
+    });
+
+    cat.classList.toggle("hidden", visibleCount === 0);
+  });
+});
+
+// =====================================================
+// INIT
+// =====================================================
+renderTopics();
+updateBadge();
+loadChatHistory();
+</script>
+</body>
+</html>
