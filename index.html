@@ -53,7 +53,7 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 20px 12px;
   border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  background: var(--bg);
   position: relative;
   flex-shrink: 0;
 }
@@ -64,14 +64,14 @@ html, body {
 }
 .header .logo-img {
   height: 40px; width: auto; max-width: 160px;
-  margin-right: 10px; object-fit: contain;
+  margin-right: 10px; object-fit: contain; filter: brightness(0);
   display: block;
 }
 .header .subtitle {
   font-family: var(--font-body); font-weight: 200;
   font-size: 11px; color: var(--text-muted);
   letter-spacing: 1px; text-transform: uppercase;
-  margin-left: 12px; margin-top: 4px;
+  position: absolute; left: 50%; transform: translateX(-50%); margin-top: 4px;
 }
 
 /* ===== TABS ===== */
@@ -399,7 +399,7 @@ flex-shrink: 0;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .stat-bar {
-  flex: 1; height: 8px; background: var(--surface-2);
+  flex: 1; height: 8px; background: var(--bg);
   border-radius: 4px; overflow: hidden;
 }
 .stat-bar-fill {
